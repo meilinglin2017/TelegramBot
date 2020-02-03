@@ -20,7 +20,7 @@ def send_msg(chat_id,msg_text):
 		return r.json()['result']['message_id']
 	return r.status_code
 
-def retrieve_msg(chat_id)
+def retrieve_msg(chat_id):
 	return r.json()['result'][0]['message']['text']
 ##############################################################
 # mood_tracker 
@@ -32,12 +32,13 @@ def mood_tracker(chat_id, interval_sec):
 	while True:
 		number = retrieve_msg(chat_id) 
 		if number in range (,)
-		
+
 	# Time Tracker? To check every interval, while statement
 	# If-else statement defining enter number range and the message that you want to send
 	# send_msg parameter need to be used
 	# Handle exceptions where the user keyed in something else
 	# Of if user keyed in three/3
+	# GET AVERAGE OF THE LAST 10 Datapoints that was keyed in by the user
 
 		sleep(3600)
 
