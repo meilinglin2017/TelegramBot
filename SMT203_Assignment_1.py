@@ -81,6 +81,7 @@ def mood_tracker(chat_id, interval_sec):
 	future_time = current_time + timedelta(minutes=1)
 	get_latest_text(offset)
 	num_list = []
+	result_text = ''
 
 	while current_time == future_time:
 		current_time = future_time
@@ -89,7 +90,8 @@ def mood_tracker(chat_id, interval_sec):
 		offset += 1
 		text = get_latest_text(offset)
 		datapoints = avg_datapoints(num_list)
-		output_text = text + 'Your avg mood for the last ' + datapoints[0] + 'is ' + datapoints[1]
+		result_text = text + 'Your avg mood for the last ' + datapoints[0] + 'is ' + datapoints[1]
+		send_msg(chat_id, result_text)
 		print(r.json())
 	return 
 
