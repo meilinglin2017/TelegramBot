@@ -20,6 +20,7 @@ sendPhoto_url = base_url + 'sendPhoto'
 getUpdates_url = base_url + 'getUpdates'
 
 # add other global variables here 
+# Trigger to send message
 def send_msg(chat_id,msg_text):
 	my_params = {"chat_id": chat_id, "text":msg_text}
 	r = requests.get(sendMsg_url, params=my_params)
@@ -27,6 +28,7 @@ def send_msg(chat_id,msg_text):
 		return r.json()['result']['message_id']
 	return r.status_code
 
+# Obtain the text of offset that was given
 def get_latest_text(offset):
 	my_params = {"offset": offset}
 	r = requests.get(url=getUpdates_url,params=my_params)
@@ -34,6 +36,7 @@ def get_latest_text(offset):
 	print(text)
 	return text 
 
+# Check if the input is a float/number then if it is a string ask user to enter a number
 def process_input(input):
 	try: 
 		number = float(input)
@@ -47,6 +50,7 @@ def process_input(input):
 		output = 'Please key in a **NUMBER** from 1 to 5'
 	return output	
 
+# Report average and number of datapoints that was given
 def avg_datapoints(num_list):
 	if len(num_list) > 10:
 		num_list.pop(0)
@@ -60,7 +64,6 @@ def avg_datapoints(num_list):
 ##############################################################
 
 def mood_tracker(chat_id, interval_sec):
-
 	# write your code here
 	my_url = getUpdates_url
 
@@ -70,19 +73,24 @@ def mood_tracker(chat_id, interval_sec):
 		offset = r.json()['result'][-1]['update_id']
 	except:
 		offset = 0
+		
 	# print(offset)
 	current_time = datetime.now()
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
 	send_msg(chat_id,msg_text)
 	future_time = current_time + timedelta(minutes=1)
 	get_latest_text(offset)
+	num_list = []
 
 	while current_time == future_time:
 		current_time = future_time
 		future_time = current_time + timedelta(minutes=1)
 		send_msg(chat_id,msg_text)
 		offset += 1
-		get_latest_text(offset)
+		text = get_latest_text(offset)
+		datapoints = avg_datapoints(num_list)
+		output_text = text + 'Your avg mood for the last ' + datapoints[0] + 'is ' + datapoints[1]
 		print(r.json())
 	return 
+
 mood_tracker(chat_id,2)
