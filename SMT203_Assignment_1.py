@@ -31,6 +31,7 @@ def get_latest_text(offset):
 	my_params = {"offset": offset}
 	r = requests.get(url=getUpdates_url,params=my_params)
 	text = r.json()['result'][0]['message']['text']
+	print(text)
 	return text 
 
 def process_input(input):
@@ -69,20 +70,19 @@ def mood_tracker(chat_id, interval_sec):
 		offset = r.json()['result'][-1]['update_id']
 	except:
 		offset = 0
+	# print(offset)
+	current_time = datetime.now()
+	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
+	send_msg(chat_id,msg_text)
+	future_time = current_time + timedelta(minutes=1)
+	get_latest_text(offset)
 
-	while True:
-		current_time = datetime.now()
-		msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
+	while current_time == future_time:
+		current_time = future_time
+		future_time = current_time + timedelta(minutes=1)
 		send_msg(chat_id,msg_text)
-		future_time = datetime.now() + timedelta(minutes=1)
-		if current_time == future_time:
-			send_msg(chat_id,msg_text)
+		offset += 1
 		get_latest_text(offset)
-		next_param = {'offset': offset + 1}
-
-
-
-	print(r.json())
-
-
+		print(r.json())
 	return 
+mood_tracker(chat_id,2)
