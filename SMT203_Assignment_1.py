@@ -8,7 +8,7 @@ import time
 # global variables 
 ##############################################################
 
-chat_id = 385623042 # fill in your chat id here
+chat_id = 153754183 # fill in your chat id here
 api_token = '1026444413:AAGgoFtrF4hAdQw3cWhKRKhtCPpr_bLxajU' # fill in your api token here 
 
 base_url = 'https://api.telegram.org/bot{}/'.format(api_token)
