@@ -47,7 +47,13 @@ def process_input(input):
 	return output	
 
 def avg_datapoints(num_list):
-	return sum(num_list)/len(num_list)
+	if len(num_list) > 10:
+		num_list.pop(0)
+	print(num_list)
+	len_list = len(num_list)
+	average = sum(num_list)/len(num_list)
+	return [len_list,average]
+
 ##############################################################
 # mood_tracker 
 ##############################################################
@@ -58,22 +64,23 @@ def mood_tracker(chat_id, interval_sec):
 	my_url = getUpdates_url
 
 	first_params = {'offset': 0}
-
 	r = requests.get(url=my_url,params=first_params)
 	try: 
-		starting_id = r.json()['result'][-1]['update_id']
-
+		offset = r.json()['result'][-1]['update_id']
 	except:
-		starting_id = 0
+		offset = 0
 
-	current_time = datetime.now()
-	# print(current_time)
-	future_time = datetime.now() + timedelta(hours=1)
-	# print(future_time)
-	next_param = {'offset': starting_id + 1}
-	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
-	send_msg(chat_id,msg_text)
-	r = requests.get(url=my_url,params=next_param)
+	while True:
+		current_time = datetime.now()
+		msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
+		send_msg(chat_id,msg_text)
+		future_time = datetime.now() + timedelta(minutes=1)
+		if current_time == future_time:
+			send_msg(chat_id,msg_text)
+		get_latest_text(offset)
+		next_param = {'offset': offset + 1}
+
+
 
 	print(r.json())
 
