@@ -53,10 +53,12 @@ def process_input(input):
 		elif 3 <= number <= 4:
 			output = 'Holy shit NUBBAD!'
 		else:
-			output = 'YOU DA BOSS MAN DATS RITE'
+			output = 'YOU DA BOSS MAN DATS RITE!'
+		verification = 1
 	except:
 		output = 'Please key in a **NUMBER** from 1 to 5'
-	return output	
+		verification = 0
+	return [output,verification]
 
 # Report average and number of datapoints that was given
 def avg_datapoints(num_list):
@@ -76,20 +78,30 @@ def mood_tracker(chat_id, interval_sec):
 
 	current_time = datetime.now()
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
-	future_time = current_time + timedelta(seconds=20)
+	future_time = current_time + timedelta(seconds=interval_sec)
 	current_offset = get_latest_offset()
+	num_list = []
 	send_msg(chat_id,msg_text)
 
 	while True:
 		if datetime.now() >= future_time:
 			send_msg(chat_id,msg_text)
-			future_time = datetime.now() + timedelta(seconds=30)
+			future_time = datetime.now() + timedelta(seconds=interval_sec)
 
 		if current_offset < get_latest_offset(): 
 			current_offset = get_latest_offset()
 			user_response = get_latest_text(current_offset)
-			bot_response = process_input(user_response)
-			send_msg(chat_id,bot_response)
+			output_response = process_input(user_response)
+			print(output_response)
+
+			if output_response[1] == 1:
+				num_list.append(float(user_response))
+				datapoint_count = str(avg_datapoints(num_list)[0])
+				datapoint_average = str(avg_datapoints(num_list)[1])
+				bot_response = output_response[0] + " Your avg mood for the last " + datapoint_count + " data points is " + datapoint_average
+				send_msg(chat_id,bot_response)
+			else:
+				send_msg(chat_id,output_response[0])
 
 
 	return 
