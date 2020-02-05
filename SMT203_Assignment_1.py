@@ -23,10 +23,18 @@ getUpdates_url = base_url + 'getUpdates'
 # Trigger to send message
 def send_msg(chat_id,msg_text):
 	my_params = {"chat_id": chat_id, "text":msg_text}
-	r = requests.get(sendMsg_url, params=my_params)
+	r = requests.get(url=sendMsg_url, params=my_params)
 	if r.status_code == 200:
 		return r.json()['result']['message_id']
 	return r.status_code
+
+def get_latest_offset():
+	r = requests.get(url=getUpdates_url)
+	try:
+		offset = r.json()['result'][-1]['update_id']
+	except:
+		offset = 0
+	return offset
 
 # Obtain the text of offset that was given
 def get_latest_text(offset):
@@ -69,30 +77,30 @@ def mood_tracker(chat_id, interval_sec):
 
 	first_params = {'offset': 0}
 	r = requests.get(url=my_url,params=first_params)
-	try: 
-		offset = r.json()['result'][-1]['update_id']
-	except:
-		offset = 0
-		
-	# print(offset)
+
 	current_time = datetime.now()
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
+	future_time = current_time + timedelta(seconds=20)
 	send_msg(chat_id,msg_text)
-	future_time = current_time + timedelta(minutes=1)
-	get_latest_text(offset)
-	num_list = []
-	result_text = ''
+	print(current_time)
+	print(future_time)
 
-	while current_time == future_time:
-		current_time = future_time
-		future_time = current_time + timedelta(minutes=1)
-		send_msg(chat_id,msg_text)
-		offset += 1
-		text = get_latest_text(offset)
-		datapoints = avg_datapoints(num_list)
-		result_text = text + 'Your avg mood for the last ' + datapoints[0] + 'is ' + datapoints[1]
-		send_msg(chat_id, result_text)
-		print(r.json())
+	while True:
+		if current_time == future_time:
+			send_msg(chat_id,msg_text)
+			current_time = future_time
+			future_time = current_time + timedelta(minutes=1)
+			print(current_time)
+			print(future_time)
+		datetime.now()
+		try: 
+			offset = get_latest_offset()
+			response = get_latest_text(offset)
+			print(offset)
+			print(response)
+		except:
+			pass
+
 	return 
 
 mood_tracker(chat_id,2)
