@@ -27,10 +27,13 @@ def send_msg(chat_id,msg_text):
 		return r.json()['result']['message_id']
 	return r.status_code
 
-def retrieve_msg(chat_id):
+def retrieve_msg(chat_id, latest_update):
 	my_url = getUpdates_url 
 	r = requests.get(my_url)
+	print(r.json()['result'][0]['message']['text'])
 	return r.json()['result'][0]['message']['text']
+
+
 ##############################################################
 # mood_tracker 
 ##############################################################
@@ -44,9 +47,14 @@ def mood_tracker(chat_id, interval_sec):
 	# r = requests.get(url=getUpdates_url, params=params)
 	# we use try except here, because r.json()['result'] may be an empty list
 	# alternatively, you can use IF-THEN to check that list is not empty 
+	my_url = getUpdates_url
+	
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
 	send_msg(chat_id,msg_text)
-
+	r = requests.get(my_url)
+	print(json.dumps(r.json(),indent = 2, sort_keys=True))
+	latest_update = 
+	text = retrieve_msg(chat_id)
 	# text = retrieve_msg(chat_id)
 
 	# sleep(interval_sec)
@@ -69,6 +77,6 @@ def mood_tracker(chat_id, interval_sec):
 	# # GET AVERAGE OF THE LAST 10 Datapoints that was keyed in by the user
 
 	# 	sleep(3600)
-	return text
+	return 
 
 mood_tracker(chat_id, 2)
