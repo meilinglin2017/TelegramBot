@@ -73,33 +73,24 @@ def avg_datapoints(num_list):
 
 def mood_tracker(chat_id, interval_sec):
 	# write your code here
-	my_url = getUpdates_url
-
-	first_params = {'offset': 0}
-	r = requests.get(url=my_url,params=first_params)
 
 	current_time = datetime.now()
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
 	future_time = current_time + timedelta(seconds=20)
+	current_offset = get_latest_offset()
 	send_msg(chat_id,msg_text)
-	print(current_time)
-	print(future_time)
 
 	while True:
-		if current_time == future_time:
+		if datetime.now() >= future_time:
 			send_msg(chat_id,msg_text)
-			current_time = future_time
-			future_time = current_time + timedelta(minutes=1)
-			print(current_time)
-			print(future_time)
-		datetime.now()
-		try: 
-			offset = get_latest_offset()
-			response = get_latest_text(offset)
-			print(offset)
-			print(response)
-		except:
-			pass
+			future_time = datetime.now() + timedelta(seconds=30)
+
+		if current_offset < get_latest_offset(): 
+			current_offset = get_latest_offset()
+			user_response = get_latest_text(current_offset)
+			bot_response = process_input(user_response)
+			send_msg(chat_id,bot_response)
+
 
 	return 
 
