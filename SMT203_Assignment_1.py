@@ -27,11 +27,22 @@ def send_msg(chat_id,msg_text):
 		return r.json()['result']['message_id']
 	return r.status_code
 
-def retrieve_msg(chat_id, latest_update):
-	my_url = getUpdates_url 
-	r = requests.get(my_url)
-	print(r.json()['result'][0]['message']['text'])
-	return r.json()['result'][0]['message']['text']
+# def retrieve_latest(chat_id):
+# 	my_url = getUpdates_url 
+# 	first_params = {'offeset': 0}
+
+# 	r = requests.get(url=my_url,params=first_params)
+
+# 	try: 
+# 		previous_id = r.json()['result'][-1]['update_id']
+
+# 	except:
+# 		previous_id = 0
+
+
+# 	latest_param = {'offset': previous_id + 1}
+# 	print(r.json()['result'][-1]['message']['text'])
+# 	return r.json()['result'][0]['message']['text']
 
 
 ##############################################################
@@ -48,14 +59,27 @@ def mood_tracker(chat_id, interval_sec):
 	# we use try except here, because r.json()['result'] may be an empty list
 	# alternatively, you can use IF-THEN to check that list is not empty 
 	my_url = getUpdates_url
-	
-	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
-	send_msg(chat_id,msg_text)
-	r = requests.get(my_url)
-	print(json.dumps(r.json(),indent = 2, sort_keys=True))
-	latest_update = 
-	text = retrieve_msg(chat_id)
-	# text = retrieve_msg(chat_id)
+	latest_update = 881346053
+
+	my_url = getUpdates_url 
+	first_params = {'offeset': 0}
+
+	r = requests.get(url=my_url,params=first_params)
+
+	try: 
+		previous_id = r.json()['result'][-1]['update_id']
+
+	except:
+		previous_id = 0
+
+	while True:
+		latest_param = {'offset': previous_id + 1}
+		msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
+		send_msg(chat_id,msg_text)
+		r = requests.get(url=my_url,params=latest_param)
+		print(json.dumps(r.json(),indent = 2, sort_keys=True))
+		sleep(30)
+		# text = retrieve_msg(chat_id)
 
 	# sleep(interval_sec)
 	# try:
