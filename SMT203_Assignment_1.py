@@ -8,8 +8,8 @@ from datetime import datetime,timedelta
 ##############################################################
 # global variables 
 ##############################################################
-
-chat_id = 385623042 # fill in your chat id here
+# Change your chat id here
+chat_id = 385623042 
 api_token = '1026444413:AAGgoFtrF4hAdQw3cWhKRKhtCPpr_bLxajU' # fill in your api token here 
 
 base_url = 'https://api.telegram.org/bot{}/'.format(api_token)
@@ -46,7 +46,8 @@ def process_input(input):
 		output = 'Please key in a **NUMBER** from 1 to 5'
 	return output	
 
-
+def avg_datapoints(num_list):
+	return sum(num_list)/len(num_list)
 ##############################################################
 # mood_tracker 
 ##############################################################
@@ -54,7 +55,6 @@ def process_input(input):
 def mood_tracker(chat_id, interval_sec):
 
 	# write your code here
-
 	my_url = getUpdates_url
 
 	first_params = {'offset': 0}
@@ -79,36 +79,3 @@ def mood_tracker(chat_id, interval_sec):
 
 
 	return 
-
-# mood_tracker(chat_id, 2)
-
-
-# get latest update id before this echobot 
-# params = {'offset': 0}
-# r = requests.get(url=getUpdates_url, params=params)
-# we use try except here, because r.json()['result'] may be an empty list
-# alternatively, you can use IF-THEN to check that list is not empty 
-# latest_update = 881346053
-# print(json.dumps(r.json(),indent = 2, sort_keys=True))
-# text = retrieve_msg(chat_id)
-
-# sleep(interval_sec)
-# try:
-# 	previous_id = r.json()['result'][-1]['update_id']
-# except:
-# 	previous_id = 0 
-# print(r.status_code)
-# print('previous_id', previous_id)
-
-# while True:
-# 	number = retrieve_msg(chat_id) 
-# 	if number in range (1,6)
-
-# # Time Tracker? To check every interval, while statement
-# # If-else statement defining enter number range and the message that you want to send
-# # send_msg parameter need to be used
-# # Handle exceptions where the user keyed in something else
-# # Of if user keyed in three/3
-# # GET AVERAGE OF THE LAST 10 Datapoints that was keyed in by the user
-
-# 	sleep(3600)
