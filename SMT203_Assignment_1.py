@@ -66,8 +66,8 @@ def avg_datapoints(num_list):
 		num_list.pop(0)
 	print(num_list)
 	len_list = len(num_list)
-	average = sum(num_list)/len(num_list)
-	return [len_list,average]
+	average = round(sum(num_list)/len(num_list),2)
+	return [str(len_list),str(average)]
 
 ##############################################################
 # mood_tracker 
@@ -79,31 +79,55 @@ def mood_tracker(chat_id, interval_sec):
 	current_time = datetime.now()
 	msg_text = "Please rate your current mood: 1(poor) to 5(excellent)"
 	future_time = current_time + timedelta(seconds=interval_sec)
+	halftime_mark = future_time - timedelta(seconds=interval_sec/2)
 	current_offset = get_latest_offset()
 	num_list = []
+	count_response = 0
+	reminder = 0
 	send_msg(chat_id,msg_text)
+	
 
 	while True:
-		if datetime.now() >= future_time:
-			send_msg(chat_id,msg_text)
-			future_time = datetime.now() + timedelta(seconds=interval_sec)
+		try:
+			if datetime.now() >= future_time:
+				send_msg(chat_id,msg_text)
+				future_time = datetime.now() + timedelta(seconds=interval_sec)
+				halftime_mark = future_time - timedelta(seconds=interval_sec/2)
+				count_response = 0
+				reminder = 0
 
-		if current_offset < get_latest_offset(): 
-			current_offset = get_latest_offset()
-			user_response = get_latest_text(current_offset)
-			output_response = process_input(user_response)
+			# print(get_latest_offset())
+			# print("now " + str(datetime.now()))
+			# print("future " + str(future_time))
+			
+			if datetime.now() >= halftime_mark and reminder == 0 and count_response == 0:
+				output_response = "Please remember to send in your mood by " + str(future_time) + " !"
+				send_msg(chat_id,output_response)
+				reminder += 1
+
+			if current_offset < get_latest_offset(): 
+				current_offset = get_latest_offset()
+				user_response = get_latest_text(current_offset)
+				output_response = process_input(user_response)
+				# print("response count: " + str(count_response))
+
+				if count_response >= 1:
+					output_response = "You have already sent in your mood, please try again at " + str(future_time)
+					send_msg(chat_id,output_response)
+
+				elif count_response == 0:
+					if output_response[1] == 1:
+						count_response += 1
+						num_list.append(float(user_response))
+						output_response[0] += " Your avg mood for the last " + avg_datapoints(num_list)[0] + " data points is " + avg_datapoints(num_list)[1]
+						send_msg(chat_id,output_response[0])
+					else:
+						send_msg(chat_id,output_response[0])
+		except KeyboardInterrupt:
+			output_response = "Thank you for using YORBOOTIFUL! Have a great day ahead!"
 			print(output_response)
-
-			if output_response[1] == 1:
-				num_list.append(float(user_response))
-				datapoint_count = str(avg_datapoints(num_list)[0])
-				datapoint_average = str(avg_datapoints(num_list)[1])
-				bot_response = output_response[0] + " Your avg mood for the last " + datapoint_count + " data points is " + datapoint_average
-				send_msg(chat_id,bot_response)
-			else:
-				send_msg(chat_id,output_response[0])
-
-
+			send_msg(chat_id,output_response)
+			exit()
 	return 
 
-mood_tracker(chat_id,2)
+mood_tracker(chat_id,10)
