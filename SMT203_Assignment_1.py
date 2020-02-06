@@ -9,7 +9,7 @@ from datetime import datetime,timedelta
 # global variables 
 ##############################################################
 # Change your chat id here
-chat_id = 385623042 
+chat_id = 153754183 
 api_token = '1026444413:AAGgoFtrF4hAdQw3cWhKRKhtCPpr_bLxajU' # fill in your api token here 
 
 base_url = 'https://api.telegram.org/bot{}/'.format(api_token)
@@ -48,13 +48,17 @@ def get_latest_text(offset):
 def process_input(input):
 	try: 
 		number = float(input)
-		if 0 <= number <= 3:
-			output = 'Oh dear, hope you are feeling better soon!'
-		elif 3 <= number <= 4:
-			output = 'Holy shit NUBBAD!'
+		if number > 5 or number < 0:
+			output = 'Please key in a **NUMBER** from 1 to 5'
+			verification = 0
 		else:
-			output = 'YOU DA BOSS MAN DATS RITE!'
-		verification = 1
+			if 0 <= number <= 3:
+				output = 'Oh dear, hope you are feeling better soon!'
+			elif 3 <= number <= 4:
+				output = 'Holy shit NUBBAD!'
+			else:	
+				output = 'YOU DA BOSS MAN DATS RITE!'
+			verification = 1
 	except:
 		output = 'Please key in a **NUMBER** from 1 to 5'
 		verification = 0
