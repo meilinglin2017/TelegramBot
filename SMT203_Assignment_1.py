@@ -9,7 +9,7 @@ from datetime import datetime,timedelta
 # global variables 
 ##############################################################
 # Change your chat id here
-chat_id = 385623042
+chat_id = 153754183
 
 # fill in your api token here 
 api_token = '1026444413:AAGgoFtrF4hAdQw3cWhKRKhtCPpr_bLxajU' 
