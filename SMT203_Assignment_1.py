@@ -20,7 +20,9 @@ sendPhoto_url = base_url + 'sendPhoto'
 
 getUpdates_url = base_url + 'getUpdates'
 
+# FYI this api may return quotes that contains sensitive language (SORRY!!)
 quotes_url = 'https://api.kanye.rest/'
+
 cat_url = 'https://aws.random.cat/meow?ref=apilist.fun'
 
 # add other global variables here 
@@ -56,12 +58,12 @@ def process_input(input):
 			output = 'Please key in a *NUMBER* from *1* to *5*'
 			verification = 0
 		else:
-			if 0 <= number <= 3:
-				output = '_Oh dear_, *hope you are feeling better soon!*'
-			elif 3 <= number <= 4:
-				output = '_Meowwww_ *WOW NUBBAD!*'
+			if 0 <= number < 3:
+				output = '_Oh dear_, *hope you are feeling better soon!* Here is a cat pic to brighten up yurrr day!'
+			elif 3 <= number < 4:
+				output = '_Meowwww_ *WOW NUBBAD!* Here is a cat pic to brighten up yurrr day further!'
 			else:	
-				output = '_RAWRRRRR_! *Keep it up!*'
+				output = '_RAWRRRRR_! *Keep it up!* Here is a cat pic to make your day brighter than yurrr future!'
 			verification = 1
 	except:
 		output = 'Please key in a *NUMBER* from *1* to *5*'
@@ -78,7 +80,7 @@ def avg_datapoints(num_list):
 
 def retreive_quote():
 	r = requests.get(url=quotes_url)
-	text = 'As the famous *Kanye West* says: _' + r.json()['quote'] + '_'
+	text = 'As the famous *Kanye West* says \n(*WARNING*: THERE MAYBE SOME PROFANITIES):\n_' + r.json()['quote'] + '_'
 	return text
 
 def retrieve_imgurl():
@@ -155,4 +157,4 @@ def mood_tracker(chat_id, interval_sec):
 			exit()
 	return 
 
-mood_tracker(chat_id,20)
+mood_tracker(chat_id,30)
